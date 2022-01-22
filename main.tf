@@ -5,12 +5,12 @@ terraform {
 
   backend "gcs" {
     bucket = "terraform_d"
-	prefix = "terraform/state"
+    prefix = "terraform/state"
   }
 }
 
 provider "google" {
-  project     = var.project
+  project = var.project
 }
 
 # Enable the Cloud Run API.
