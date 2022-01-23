@@ -2,11 +2,11 @@ name: Create image and deploy
 
 on:
   push:
-    branches: ['main']
+    - tags: v*
 
 env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  REGISTRY: gcr.io
+  IMAGE_URI: gcr.io/complete-app-324417/${{ github.repository }}
 
 jobs:
   build-and-publish-image:
@@ -19,10 +19,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Log in to the Container registry
+      - name: Log to  GCR
         uses: docker/login-action@v1
         with:
           registry: ${{ env.REGISTRY }}
+          username: _json_key
+          password: ${{ secrets.GOOGLE_CREDENTIALS }} 
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
@@ -30,7 +37,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v3
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{ env.IMAGE_URI }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
@@ -66,12 +73,12 @@ jobs:
       run: terraform fmt -check
 
     - name: Terraform Plan
-      run: terraform plan -var container_img=${{ env.REGISTRY}}/${{ env.IMAGE_NAME }}:latest
+      run: terraform plan -var container_img=${{ env.IMAGE_URI }}:main
       env:
         GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }} 
 
     - name: Terraform Apply
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-      run: terraform apply -auto-approve -var container_img=${{ env.REGISTRY}}/${{ env.IMAGE_NAME }}:latest
+      run: terraform apply -auto-approve -var container_img=${{ env.IMAGE_URI }}:main
       env:
         GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }} 
