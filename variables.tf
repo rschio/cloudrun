@@ -16,7 +16,7 @@ variable "service_name" {
 }
 
 variable "container_img" {
-  type    = string
+  type        = string
   description = "The container image."
 }
 
