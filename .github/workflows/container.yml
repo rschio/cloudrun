@@ -7,6 +7,8 @@ on:
 env:
   REGISTRY: gcr.io
   IMAGE_NAME: ${{ github.repository }}
+  PROJECT_ID: complete-app-324417
+  IMAGE_URI: ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/${{ env.IMAGE_NAME }}
 
 jobs:
   build-and-publish-image:
@@ -37,7 +39,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v3
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{ env.IMAGE_URI }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
@@ -73,12 +75,12 @@ jobs:
       run: terraform fmt -check
 
     - name: Terraform Plan
-      run: terraform plan -var container_img=${{ env.REGISTRY}}/${{ env.IMAGE_NAME }}:latest
+      run: terraform plan -var container_img=${{ env.IMAGE_URI }}:main
       env:
         GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }} 
 
     - name: Terraform Apply
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-      run: terraform apply -auto-approve -var container_img=${{ env.REGISTRY}}/${{ env.IMAGE_NAME }}:latest
+      run: terraform apply -auto-approve -var container_img=${{ env.IMAGE_URI }}:main
       env:
         GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }} 
