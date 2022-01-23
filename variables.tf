@@ -17,7 +17,7 @@ variable "service_name" {
 
 variable "container_img" {
   type    = string
-  default = "us-central1-docker.pkg.dev/complete-app-324417/cloud-run-source-deploy/redisperf:latest"
+  description = "The container image."
 }
 
 variable "redis_addr" {
