@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package proto;
+
+option go_package = "github.com/rschio/redisperf/proto;proto";
+
+message Output {
+	string set = 1;
+	string get = 2;	
+
+}
+
+service Times {
+	rpc GetTimes(Output) returns (Output) {}
+}
