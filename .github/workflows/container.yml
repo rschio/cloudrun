@@ -6,9 +6,7 @@ on:
 
 env:
   REGISTRY: gcr.io
-  IMAGE_NAME: ${{ github.repository }}
-  PROJECT_ID: complete-app-324417
-  IMAGE_URI: ${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/${{ env.IMAGE_NAME }}
+  IMAGE_URI: gcr.io/complete-app-324417/${{ github.repository }}
 
 jobs:
   build-and-publish-image:
