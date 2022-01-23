@@ -67,12 +67,12 @@ jobs:
       run: terraform fmt -check
 
     - name: Terraform Plan
-      run: terraform plan -var container_image=${{ env.REGISTRY}}/${{ env.IMAGE_NAME }}:latest
+      run: terraform plan -var container_img=${{ env.REGISTRY}}/${{ env.IMAGE_NAME }}:latest
       env:
         GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }} 
 
     - name: Terraform Apply
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-      run: terraform apply -auto-approve -var container_image=${{ env.REGISTRY}}/${{ env.IMAGE_NAME }}:latest
+      run: terraform apply -auto-approve -var container_img=${{ env.REGISTRY}}/${{ env.IMAGE_NAME }}:latest
       env:
         GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }} 
